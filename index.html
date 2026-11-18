@@ -702,6 +702,11 @@
             <span>registros_iot</span>
             <span id="badgeIotCount" class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">3</span>
           </button>
+          <button class="db-tab-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 shrink-0 transition-all" data-table="accesos_sistema">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>accesos_sistema</span>
+            <span id="badgeAccesosCount" class="bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]">4</span>
+          </button>
         </div>
 
         <!-- Table Viewport -->
@@ -1614,6 +1619,12 @@
         { id: 1, estacion: "Metrorrey Cuauhtémoc", componente: "Servomotor MG995", evento: "Apertura 90° dispensación", hora: "10:15 AM" },
         { id: 2, estacion: "Metrorrey Padre Mier", componente: "Sensor KY-004", evento: "Inserción bahía 3 detectada", hora: "10:30 AM" },
         { id: 3, estacion: "Metrorrey Zaragoza", componente: "Servomotor MG995", evento: "Bloqueo 0° completado", hora: "12:22 PM" }
+      ],
+      accesos_sistema: [
+        { id: 1, usuario: "Hector Andrés Uribe", matricula: "45979", rol: "Informática", acceso: "Login Web & QR", estacion: "Metrorrey Cuauhtémoc", ip: "189.204.14.22", dispositivo: "Chrome / Windows", hora: "10:14 AM", estado: "Autorizado" },
+        { id: 2, usuario: "Lorena Paola De Hoyos", matricula: "45868", rol: "Adm. Empresas", acceso: "Escaneo QR Tótem", estacion: "Metrorrey Padre Mier", ip: "187.190.45.10", dispositivo: "Safari / iPhone 14", hora: "10:59 AM", estado: "Autorizado" },
+        { id: 3, usuario: "Lic. Janet Tenorio", matricula: "DOCENTE-UN", rol: "Docente Evaluador", acceso: "Admin Panel", estacion: "Portal Web Oficial", ip: "189.204.12.85", dispositivo: "Chrome / macOS", hora: "12:08 PM", estado: "Autorizado" },
+        { id: 4, usuario: "Ian David Villegas", matricula: "45726", rol: "Contabilidad", acceso: "Consulta Saldo", estacion: "OXXO Paseo Morelos", ip: "201.144.33.60", dispositivo: "Chrome / Android", hora: "01:15 PM", estado: "Autorizado" }
       ]
     };
 
@@ -1631,6 +1642,8 @@
       if (badgePrestamos) badgePrestamos.textContent = paraGODB.prestamos.length;
       const badgeIot = document.getElementById('badgeIotCount');
       if (badgeIot) badgeIot.textContent = paraGODB.registros_iot.length;
+      const badgeAccesos = document.getElementById('badgeAccesosCount');
+      if (badgeAccesos) badgeAccesos.textContent = paraGODB.accesos_sistema ? paraGODB.accesos_sistema.length : 0;
     }
 
     function renderCurrentTable() {
@@ -1774,6 +1787,20 @@
           componente: "Servomotor MG995",
           evento: `Desbloqueo 90° garra para ${userName}`,
           hora: nowTime
+        });
+
+        if (!paraGODB.accesos_sistema) paraGODB.accesos_sistema = [];
+        paraGODB.accesos_sistema.push({
+          id: paraGODB.accesos_sistema.length + 1,
+          usuario: userName,
+          matricula: userPhone,
+          rol: "Estudiante UN",
+          acceso: "Escaneo QR & Préstamo",
+          estacion: station,
+          ip: "189.204.14.22",
+          dispositivo: navigator.userAgent.includes("Mobile") ? "Móvil / Smartphone" : "Navegador Web / PC",
+          hora: nowTime,
+          estado: "Autorizado"
         });
 
         saveDB();

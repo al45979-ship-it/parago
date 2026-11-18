@@ -88,6 +88,20 @@ CREATE TABLE IF NOT EXISTS registros_iot (
     FOREIGN KEY (estacion_id) REFERENCES estaciones(id)
 );
 
+-- 7. TABLA: ACCESOS_SISTEMA (AUDITORÍA & CONTROL DE QUIÉNES ACCEDEN)
+CREATE TABLE IF NOT EXISTS accesos_sistema (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_nombre VARCHAR(120) NOT NULL,
+    matricula_o_id VARCHAR(50) NOT NULL,
+    rol VARCHAR(40) DEFAULT 'Estudiante',          -- 'Estudiante', 'Docente', 'Administrador', 'Operador IoT'
+    tipo_acceso VARCHAR(50) NOT NULL,              -- 'Login Web', 'Escaneo QR Estación', 'Consulta BD', 'Admin Panel'
+    estacion VARCHAR(60),                          -- Estación física o 'Portal Web'
+    ip_origen VARCHAR(45) DEFAULT '189.204.12.85', -- IP pública / local
+    dispositivo VARCHAR(150),                      -- Navegador y SO (ej: 'Chrome Mobile / Android')
+    fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(20) DEFAULT 'Autorizado'        -- 'Autorizado', 'Denegado'
+);
+
 -- =====================================================================
 -- DATOS INICIALES (SEMILLA / PILOTO MONTERREY)
 -- =====================================================================
@@ -135,6 +149,13 @@ INSERT INTO registros_iot (estacion_id, paraguas_id, componente, evento, angulo_
 ('EST-CUAUHTEMOC', 'PG-MTY-8421', 'Servomotor MG995', 'Apertura de garra 3D para entrega', 90, 5.02),
 ('EST-PADRE-MIER', 'PG-MTY-8421', 'Sensor KY-004', 'Paraguas detectado en bahía de retorno', 0, 4.98),
 ('EST-ZARAGOZA', 'PG-MTY-8424', 'Servomotor MG995', 'Bloqueo electromecánico activado', 0, 5.01);
+
+-- Bitácora de Accesos de Usuarios al Sistema (Quiénes acceden)
+INSERT INTO accesos_sistema (usuario_nombre, matricula_o_id, rol, tipo_acceso, estacion, ip_origen, dispositivo) VALUES
+('Hector Andrés Uribe Garcia', '45979', 'Estudiante - Informática', 'Login Web & QR', 'Metrorrey Cuauhtémoc', '189.204.14.22', 'Chrome Windows / PC'),
+('Lorena Paola De Hoyos Garcia', '45868', 'Estudiante - Adm. Empresas', 'Escaneo QR Estación', 'Metrorrey Padre Mier', '187.190.45.10', 'Safari iOS / iPhone 14'),
+('Lic. Janet Gissel Tenorio Cuevas', 'DOCENTE-UN', 'Docente Evaluador', 'Admin Panel & Evaluacion', 'Portal Web Oficial', '189.204.12.85', 'Chrome macOS / MacBook'),
+('Ian David Villegas Reyna', '45726', 'Estudiante - Contabilidad', 'Consulta de Saldo', 'OXXO Paseo Morelos', '201.144.33.60', 'Chrome Android / Samsung S23');
 
 -- =====================================================================
 -- VISTAS ANALÍTICAS ÚTILES
