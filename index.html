@@ -102,11 +102,15 @@
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-600">
           <a href="#como-funciona" class="hover:text-brand-blue transition-colors">¿Cómo Funciona?</a>
-          <a href="#simulador" class="hover:text-brand-blue transition-colors flex items-center gap-1.5 text-brand-blue">
+          <a href="#simulador" class="hover:text-brand-blue transition-colors flex items-center gap-1 text-brand-blue">
             <i data-lucide="scan-line" class="w-4 h-4"></i>
             <span>Simulador QR</span>
+          </a>
+          <a href="#base-de-datos" class="hover:text-brand-blue transition-colors flex items-center gap-1 text-teal-700">
+            <i data-lucide="database" class="w-4 h-4"></i>
+            <span>Base de Datos</span>
           </a>
           <a href="#estaciones" class="hover:text-brand-blue transition-colors">Estaciones</a>
           <a href="#modelo" class="hover:text-brand-blue transition-colors">Modelo de Negocio</a>
@@ -137,6 +141,7 @@
     <div id="mobileMenu" class="hidden lg:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3">
       <a href="#como-funciona" class="block py-2 text-base font-medium text-slate-700 hover:text-brand-blue mobile-link">¿Cómo Funciona?</a>
       <a href="#simulador" class="block py-2 text-base font-semibold text-brand-blue mobile-link">Simulador Préstamo QR</a>
+      <a href="#base-de-datos" class="block py-2 text-base font-semibold text-teal-700 mobile-link">Base de Datos (SQL Live)</a>
       <a href="#estaciones" class="block py-2 text-base font-medium text-slate-700 hover:text-brand-blue mobile-link">Red de Estaciones</a>
       <a href="#modelo" class="block py-2 text-base font-medium text-slate-700 hover:text-brand-blue mobile-link">Modelo de Negocio</a>
       <a href="#prototipo" class="block py-2 text-base font-medium text-slate-700 hover:text-brand-blue mobile-link">Prototipo Electromecánico</a>
@@ -629,6 +634,91 @@
               <div class="text-slate-500">[00:00.01] Sensores infrarrojos y servomotores calibrados. Esperando usuario.</div>
             </div>
 
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECCIÓN: BASE DE DATOS EN VIVO (SQL & LOCAL STORAGE / SUPABASE READY) -->
+  <section id="base-de-datos" class="py-20 lg:py-24 bg-slate-900 text-slate-100 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 border border-cyan-800 mb-3">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i> Gestión de Datos & Persistencia
+          </div>
+          <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
+            Base de Datos en Tiempo Real (Live DB)
+          </h2>
+          <p class="text-slate-400 mt-2 text-sm sm:text-base max-w-2xl">
+            Explora las tablas relacionales de <strong class="text-white">paraGO</strong>. Cada préstamo realizado en el simulador superior se almacena y sincroniza de forma inmediata en este visor.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button id="btnExportDb" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors">
+            <i data-lucide="download" class="w-4 h-4 text-cyan-400"></i> Exportar JSON
+          </button>
+          <a href="database/schema.sql" download="schema.sql" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors">
+            <i data-lucide="file-code" class="w-4 h-4 text-teal-400"></i> Descargar schema.sql
+          </a>
+          <button id="btnResetDb" class="px-3 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-xs font-bold text-red-300 border border-red-800/60 flex items-center gap-1.5 transition-colors" title="Restablecer a datos de fábrica">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Database Explorer Card -->
+      <div class="bg-slate-950 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
+        
+        <!-- Tab Headers -->
+        <div class="flex items-center gap-2 p-3 bg-slate-900/90 border-b border-slate-800 overflow-x-auto text-xs font-bold">
+          <button class="db-tab-btn px-4 py-2 rounded-xl bg-brand-blue text-white shadow-sm flex items-center gap-2 shrink-0 transition-all" data-table="prestamos">
+            <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
+            <span>prestamos</span>
+            <span id="badgePrestamosCount" class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px]">3</span>
+          </button>
+          <button class="db-tab-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 shrink-0 transition-all" data-table="usuarios">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            <span>usuarios</span>
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">7</span>
+          </button>
+          <button class="db-tab-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 shrink-0 transition-all" data-table="estaciones">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+            <span>estaciones</span>
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">6</span>
+          </button>
+          <button class="db-tab-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 shrink-0 transition-all" data-table="paraguas">
+            <i data-lucide="umbrella" class="w-3.5 h-3.5"></i>
+            <span>paraguas</span>
+            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">5</span>
+          </button>
+          <button class="db-tab-btn px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2 shrink-0 transition-all" data-table="registros_iot">
+            <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+            <span>registros_iot</span>
+            <span id="badgeIotCount" class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">3</span>
+          </button>
+        </div>
+
+        <!-- Table Viewport -->
+        <div class="overflow-x-auto p-4 max-h-[380px]">
+          <div id="dbTableContainer" class="text-xs">
+            <!-- Dynamic Table Content -->
+          </div>
+        </div>
+
+        <!-- SQL Schema Info Footer -->
+        <div class="p-4 bg-slate-900 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 font-mono">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Motor: SQLite / PostgreSQL Schema • Archivo: database/schema.sql</span>
+          </div>
+          <div>
+            Persistencia Local activa (LocalStorage / IndexedDB Ready)
           </div>
         </div>
 
@@ -1487,6 +1577,144 @@
       appendLog(`Usuario consultó disponibilidad en: ${selected.text}`, 'info');
     });
 
+    // ==========================================
+    // BASE DE DATOS LOCAL REACTIVA (paraGO DB)
+    // ==========================================
+    const DEFAULT_DB = {
+      usuarios: [
+        { id: 1, nombre: "Hector Andrés Uribe Garcia", matricula: "45979", rol: "Informática", viajes: 3, estado: "Activo" },
+        { id: 2, nombre: "Lorena Paola De Hoyos Garcia", matricula: "45868", rol: "Adm. Empresas", viajes: 2, estado: "Activo" },
+        { id: 3, nombre: "Ian David Villegas Reyna", matricula: "45726", rol: "Contabilidad", viajes: 1, estado: "Activo" },
+        { id: 4, nombre: "Emilio Alexander Luna Acosta", matricula: "45765", rol: "Contabilidad", viajes: 2, estado: "Activo" },
+        { id: 5, nombre: "Eliezer Gabriel Ramirez Salazar", matricula: "45806", rol: "Contabilidad", viajes: 1, estado: "Activo" },
+        { id: 6, nombre: "Salomón Rosales Flores", matricula: "45769", rol: "Banca y Finanzas", viajes: 1, estado: "Activo" },
+        { id: 7, nombre: "Lic. Janet Gissel Tenorio Cuevas", matricula: "DOCENTE-UN", rol: "Docente Evaluador", viajes: 5, estado: "Activo" }
+      ],
+      estaciones: [
+        { id: "EST-CUAUHTEMOC", nombre: "Metrorrey Cuauhtémoc", tipo: "L1/L2", capacidad: 20, disponibles: 16, libres: 4, estado: "En Línea" },
+        { id: "EST-PADRE-MIER", nombre: "Metrorrey Padre Mier", tipo: "L2", capacidad: 20, disponibles: 12, libres: 8, estado: "En Línea" },
+        { id: "EST-ZARAGOZA", nombre: "Metrorrey Zaragoza", tipo: "L2", capacidad: 20, disponibles: 18, libres: 2, estado: "En Línea" },
+        { id: "EST-FELIX-U-GOMEZ", nombre: "Metrorrey Félix U. Gómez", tipo: "L1/L3", capacidad: 20, disponibles: 14, libres: 6, estado: "En Línea" },
+        { id: "EST-OXXO-MORELOS", nombre: "OXXO Paseo Morelos", tipo: "FEMSA", capacidad: 12, disponibles: 8, libres: 4, estado: "En Línea" },
+        { id: "EST-OXXO-MACROPLAZA", nombre: "OXXO Macroplaza", tipo: "FEMSA", capacidad: 16, disponibles: 10, libres: 6, estado: "En Línea" }
+      ],
+      paraguas: [
+        { id: "PG-MTY-8421", qr: "QR-PG-8421-MTY", airtag: "ATAG-MTY-001", estacion: "EST-CUAUHTEMOC", usos: 14, estado: "Disponible" },
+        { id: "PG-MTY-8422", qr: "QR-PG-8422-MTY", airtag: "ATAG-MTY-002", estacion: "EST-CUAUHTEMOC", usos: 9, estado: "Disponible" },
+        { id: "PG-MTY-8423", qr: "QR-PG-8423-MTY", airtag: "ATAG-MTY-003", estacion: "EST-PADRE-MIER", usos: 18, estado: "Disponible" },
+        { id: "PG-MTY-8424", qr: "QR-PG-8424-MTY", airtag: "ATAG-MTY-004", estacion: "EST-ZARAGOZA", usos: 22, estado: "Disponible" },
+        { id: "PG-MTY-8425", qr: "QR-PG-8425-MTY", airtag: "ATAG-MTY-005", estacion: "EST-OXXO-MORELOS", usos: 7, estado: "Disponible" }
+      ],
+      prestamos: [
+        { id: 101, usuario: "Hector Andrés Uribe", matricula: "45979", paraguas: "PG-MTY-8421", origen: "Metrorrey Cuauhtémoc", destino: "Metrorrey Padre Mier", inicio: "10:15 AM", fin: "10:30 AM", duracion: "15 min", estado: "Completado" },
+        { id: 102, usuario: "Lorena Paola De Hoyos", matricula: "45868", paraguas: "PG-MTY-8423", origen: "Metrorrey Padre Mier", destino: "Metrorrey Zaragoza", inicio: "11:00 AM", fin: "11:20 AM", duracion: "20 min", estado: "Completado" },
+        { id: 103, usuario: "Lic. Janet Tenorio", matricula: "DOCENTE-UN", paraguas: "PG-MTY-8424", origen: "Metrorrey Zaragoza", destino: "OXXO Paseo Morelos", inicio: "12:10 PM", fin: "12:22 PM", duracion: "12 min", estado: "Completado" }
+      ],
+      registros_iot: [
+        { id: 1, estacion: "Metrorrey Cuauhtémoc", componente: "Servomotor MG995", evento: "Apertura 90° dispensación", hora: "10:15 AM" },
+        { id: 2, estacion: "Metrorrey Padre Mier", componente: "Sensor KY-004", evento: "Inserción bahía 3 detectada", hora: "10:30 AM" },
+        { id: 3, estacion: "Metrorrey Zaragoza", componente: "Servomotor MG995", evento: "Bloqueo 0° completado", hora: "12:22 PM" }
+      ]
+    };
+
+    let paraGODB = JSON.parse(localStorage.getItem('parago_db_v1')) || DEFAULT_DB;
+    let currentDbTable = 'prestamos';
+
+    function saveDB() {
+      localStorage.setItem('parago_db_v1', JSON.stringify(paraGODB));
+      updateBadges();
+      renderCurrentTable();
+    }
+
+    function updateBadges() {
+      const badgePrestamos = document.getElementById('badgePrestamosCount');
+      if (badgePrestamos) badgePrestamos.textContent = paraGODB.prestamos.length;
+      const badgeIot = document.getElementById('badgeIotCount');
+      if (badgeIot) badgeIot.textContent = paraGODB.registros_iot.length;
+    }
+
+    function renderCurrentTable() {
+      const container = document.getElementById('dbTableContainer');
+      if (!container) return;
+
+      const data = paraGODB[currentDbTable] || [];
+      if (data.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-slate-500">No hay registros en la tabla <code>${currentDbTable}</code>.</div>`;
+        return;
+      }
+
+      const headers = Object.keys(data[0]);
+      let html = `<table class="w-full text-left border-collapse"><thead><tr class="border-b border-slate-800 text-slate-400 font-mono text-[11px] uppercase">`;
+      headers.forEach(h => html += `<th class="py-2.5 px-3 whitespace-nowrap">${h}</th>`);
+      html += `</tr></thead><tbody class="divide-y divide-slate-800/60 font-mono">`;
+
+      data.slice().reverse().forEach(row => {
+        html += `<tr class="hover:bg-slate-900/60 transition-colors">`;
+        headers.forEach(h => {
+          let val = row[h];
+          let badgeClass = "";
+          if (val === "Activo" || val === "Disponible" || val === "En Línea") {
+            badgeClass = "text-emerald-400 font-bold";
+          } else if (val === "Completado") {
+            badgeClass = "text-cyan-400";
+          } else if (val === "En curso...") {
+            badgeClass = "text-amber-400 font-bold animate-pulse";
+          }
+          html += `<td class="py-2.5 px-3 whitespace-nowrap ${badgeClass}">${val}</td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+
+    // Tab buttons for DB
+    document.querySelectorAll('.db-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.db-tab-btn').forEach(b => {
+          b.classList.remove('bg-brand-blue', 'text-white');
+          b.classList.add('text-slate-400');
+        });
+        btn.classList.add('bg-brand-blue', 'text-white');
+        btn.classList.remove('text-slate-400');
+        currentDbTable = btn.getAttribute('data-table');
+        renderCurrentTable();
+      });
+    });
+
+    // Botón exportar JSON
+    const btnExportDb = document.getElementById('btnExportDb');
+    if (btnExportDb) {
+      btnExportDb.addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(paraGODB, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `parago_database_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+      });
+    }
+
+    // Botón Reset
+    const btnResetDb = document.getElementById('btnResetDb');
+    if (btnResetDb) {
+      btnResetDb.addEventListener('click', () => {
+        if (confirm('¿Restablecer la base de datos a sus valores iniciales?')) {
+          paraGODB = JSON.parse(JSON.stringify(DEFAULT_DB));
+          saveDB();
+        }
+      });
+    }
+
+    // Render initial DB
+    updateBadges();
+    renderCurrentTable();
+
+    // Variable para rastrear ID del préstamo activo en simulación
+    let activeLoanDbId = null;
+
     // Botón de Escanear QR
     scanBtn.addEventListener('click', () => {
       if (isLoanActive) {
@@ -1523,10 +1751,38 @@
         appendLog(`Servomotor activado a 90°. Garra 3D abierta con éxito.`, 'success');
         appendLog(`Paraguas retirado. AirTag activo transmitiendo coordenadas.`, 'success');
 
+        // INSERT EN BASE DE DATOS (prestamos & registros_iot)
+        activeLoanDbId = Date.now();
+        const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        paraGODB.prestamos.push({
+          id: activeLoanDbId,
+          usuario: userName,
+          matricula: userPhone,
+          paraguas: "PG-MTY-8421",
+          origen: station,
+          destino: "En trayecto...",
+          inicio: nowTime,
+          fin: "--",
+          duracion: "En curso...",
+          estado: "Activo"
+        });
+
+        paraGODB.registros_iot.push({
+          id: paraGODB.registros_iot.length + 1,
+          estacion: station,
+          componente: "Servomotor MG995",
+          evento: `Desbloqueo 90° garra para ${userName}`,
+          hora: nowTime
+        });
+
+        saveDB();
+        appendLog(`[BD] Registro # ${activeLoanDbId} insertado con éxito en tabla 'prestamos'.`, 'success');
+
         // Estado en pantalla
         isLoanActive = true;
         simStateTitle.textContent = "¡Paraguas Retirado con Éxito!";
-        simStateDesc.textContent = "Disfruta de tu trayecto protegido del sol y la lluvia. Puedes devolverlo en cualquier tótem de la red.";
+        simStateDesc.textContent = "Disfruta de tu trayecto protegido del sol y la lluvia. Registro guardado en la base de datos.";
         simStateIcon.innerHTML = `<i data-lucide="umbrella" class="w-8 h-8 text-emerald-400"></i>`;
         lucide.createIcons();
 
@@ -1568,13 +1824,33 @@
         sensorStatusText.className = "text-xs font-mono font-bold text-emerald-300";
         sensorStatusText.textContent = "PARAGUAS DETECTADO";
 
+        // UPDATE EN BASE DE DATOS
+        const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const loanItem = paraGODB.prestamos.find(p => p.id === activeLoanDbId);
+        if (loanItem) {
+          loanItem.destino = destStation;
+          loanItem.fin = nowTime;
+          loanItem.duracion = `${loanSeconds} seg`;
+          loanItem.estado = "Completado";
+        }
+
+        paraGODB.registros_iot.push({
+          id: paraGODB.registros_iot.length + 1,
+          estacion: destStation,
+          componente: "Sensor KY-004",
+          evento: `Retorno detectado y garra bloqueada (0°)`,
+          hora: nowTime
+        });
+
+        saveDB();
+
         appendLog(`Garra cerrada y asegurada mecánicamente. Préstamo cerrado a tiempo.`, 'success');
-        appendLog(`Costo del viaje: $0.00 MXN (Patrocinado por Alianzas paraGO).`, 'success');
+        appendLog(`[BD] Registro # ${activeLoanDbId} actualizado a 'Completado'.`, 'success');
 
         isLoanActive = false;
         simReturnArea.classList.add('hidden');
         simStateTitle.textContent = "¡Devolución Confirmada!";
-        simStateDesc.textContent = `Has entregado satisfactoriamente el paraguas en ${destStation}. ¡Gracias por cuidar los recursos compartidos de Monterrey!`;
+        simStateDesc.textContent = `Has entregado satisfactoriamente el paraguas en ${destStation}. Datos actualizados en la base de datos.`;
         simStateIcon.innerHTML = `<i data-lucide="check-circle" class="w-8 h-8 text-emerald-400"></i>`;
         lucide.createIcons();
       }, 1200);
